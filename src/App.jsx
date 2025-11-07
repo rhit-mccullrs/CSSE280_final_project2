@@ -105,12 +105,8 @@ async function get_data(data_request) {
 
 function Swiss_Pair() {
   let { list_name } = useParams();
-  let data_request = "/data/" + list_name
-  let data = ''
-
-  window.addEventListener("load", () => {
-    data = get_data(data_request);
-  })
+  let data_request = "/swiss_setup/" + list_name
+  let data = get_data(data_request);
 
   return (
     <>

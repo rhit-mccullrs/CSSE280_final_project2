@@ -51,7 +51,7 @@ def get_lists(username):
 
     return lists
 
-def get_list_data(username, list_name):
+def get_list_data(list_name):
     lists = get_lists("luke")
     list_data = {}
     list = lists[list_name]
@@ -72,6 +72,9 @@ def get_round_robin_pairings(data, current_round):
         players.remove(players[(num_players-current_round)%num_players])
         num_players -= 1
 
+    if(num_players == 0):
+        return pairings
+    
     arr = players[1:num_players//2] + list(reversed(players[num_players//2:num_players]))
     ref_arr = arr.copy()
     

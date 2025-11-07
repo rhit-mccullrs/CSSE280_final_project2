@@ -54,24 +54,14 @@ def lists():
                             headers={"Content-Type":"application/json"},
                             response=json.dumps(dataservice.get_lists(username)))
 
-@app.get("/data/<list_name>")
-@jwt_required()
-def list_data(list_name):
-    username = get_jwt_identity()
-    dataservice.get_list_data(username, list_name)
-    return flask.Response(status="200 OK",
-                          headers={"Content-Type":"application/json"},
-                          response=json.dumps(dataservice.get_list_data(username, list_name)))
-
 @app.get("/swiss_setup/<list>")
-@jwt_required()
+# @jwt_required()
 def swiss_setup(list):
-    username = get_jwt_identity()
-    # dataservice.swiss_setup(username, list)
+    # username = get_jwt_identity()
+    data = dataservice.get_list_data(list)
     return flask.Response(status="200 OK",
-                          headers={"Content-Type":"application/json"},
-                        #   response=json.dumps(dataservice.get_swiss_setup(username, list))
-    )
+                        headers={"Content-Type":"application/json"},
+                        response=json.dumps(dataservice.get_round_robin_pairings(data, 1)))
 
 # @app.get("/<path>")
 # def catch_all(path):
