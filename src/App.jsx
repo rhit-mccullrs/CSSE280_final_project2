@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
 import { BrowserRouter, Route, Routes, Link, useParams } from "react-router-dom";
 
@@ -106,14 +106,21 @@ async function get_data(data_request) {
 function Swiss_Pair() {
   let { list_name } = useParams();
   let data_request = "/swiss_setup/" + list_name
-  let data = get_data(data_request);
+  let [data, set_data] = useState('');
+  useEffect( () => {
+    async function x() {
+      set_data(await get_data(data_request))
+    }
+    x() 
+  }, {})
+
 
   return (
     <>
       <h1>Swiss Pairing Bracket: {list_name}</h1>
       <div>
         <p>
-          {data}
+          {JSON.stringify(data)}
         </p>
       </div>
       <div>
