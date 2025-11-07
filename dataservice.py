@@ -59,3 +59,33 @@ def get_list_data(username, list_name):
         list_data[x] = list[x]
 
     return list_data
+
+def get_round_robin_pairings(data, current_round):
+    pairings = {}
+    players = []
+    for key in data:
+        players.append(key)
+    num_players = len(players)
+    # Handling odd number of players, so one gets a BYE
+    if num_players % 2 == 1:
+        pairings[players[(num_players-current_round)%num_players]] = "BYE"
+        players.remove(players[(num_players-current_round)%num_players])
+        num_players -= 1
+
+    arr = players[1:num_players//2] + list(reversed(players[num_players//2:num_players]))
+    ref_arr = arr.copy()
+    
+    # do algorithm current_round times
+    for i in range(current_round - 1):
+        for j in range(len(arr)):
+            arr[(j+1)%(num_players-1)] = ref_arr[j]
+        ref_arr = arr.copy()
+
+    # get top and bottom lists to do pairings
+    top = [players[0]] + arr[0:num_players//2-1]
+    bottom = list(reversed(arr[(num_players-1)//2:(num_players-1)]))
+
+    for i in range(len(top)):
+        pairings[top[i]] = bottom[i]
+
+    return pairings
