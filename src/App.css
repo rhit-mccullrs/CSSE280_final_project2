@@ -1,0 +1,29 @@
+body {
+    background-color: lightblue;
+    
+}
+
+h1 {
+    font-size: 5vh;
+}
+li:hover {
+    background-color: darkgrey;
+    color: white;
+}
+
+
+#list2 li {
+    text-decoration: line-through;
+}
+
+.list-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.list {
+    width: 25vw;
+}
+
+
+
