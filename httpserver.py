@@ -63,6 +63,15 @@ def swiss_setup(list):
                         headers={"Content-Type":"application/json"},
                         response=json.dumps(dataservice.get_round_robin_pairings(data, 1)))
 
+@app.post("/rr_next_round/<list>")
+def rr_next_round(list):
+    data = dataservice.get_list_data(list)
+    form_data = request.json
+    round = int(form_data["round"])
+    return flask.Response(status="200 OK",
+                        headers={"Content-Type":"application/json"},
+                        response=json.dumps(dataservice.get_round_robin_pairings(data, round)))
+
 # @app.get("/<path>")
 # def catch_all(path):
 #     return flask.Response(status="200 OK")

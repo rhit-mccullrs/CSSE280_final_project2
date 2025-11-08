@@ -103,35 +103,72 @@ async function get_data(data_request) {
   }
 }
 
+async function rr_next_round(round_request, round) {
+  try {
+    let response = await fetch(round_request, {
+      method: 'POST',
+      body: { "round": round },
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    let responseData = await response.json();
+    return responseData
+  }
+  catch (ex) {
+    console.error(ex)
+  }
+}
+
+function update_data(round_request, round) {
+  round += 1;
+  return rr_next_round(round_request, round)
+}
+
 function Swiss_Pair() {
   let { list_name } = useParams();
   let data_request = "/swiss_setup/" + list_name
   let [data, set_data] = useState('');
-  useEffect( () => {
+  let round_number = 1
+  let player_table = ''
+
+  useEffect(() => {
     async function x() {
       set_data(await get_data(data_request))
+      await button_listener()
     }
     x()
-  }, {});
+  }, []);
 
-  let player_table = "<table><tr><th>Player</th><th>Rating</th></tr>";
-  for (let player in data) {
-    player_table += `<tr><th>${player}</th><th>${data[player]}</th></tr>`;
+  async function button_listener() {
+    let button = document.getElementById("button")
+    alert(round_number)
+    button.addEventListener("click" , async function x(e) {
+      set_data( await update_data(round_request, round_number))
+    })
   }
-  player_table += "</table>"
+
+  let round_request = "/rr_next_round/" + list_name
+  if(data != {}) {
+    player_table = "<table><tr><th>Player</th><th>Rating</th></tr>";
+    for (let player in data) {
+      player_table += `<tr><th>${player}</th><th>${data[player]}</th></tr>`;
+    }
+    player_table += "</table>"
+  }
 
   return (
     <>
       <h1>Swiss Pairing Bracket: {list_name}</h1>
       <div>
         <p>
-          <div dangerouslySetInnerHTML={{__html: player_table}} />
+          <div dangerouslySetInnerHTML={{ __html: player_table }} />
         </p>
       </div>
       <div>
-        <form>
-
-        </form>
+        <button id='button'>
+          Next Round
+        </button>
       </div>
     </>
   )
