@@ -147,7 +147,7 @@ function Swiss_Pair() {
 
   let round_request = "/rr_next_round/" + list_name + "/" + round_number;
   if(data != {}) {
-    player_table = "<table><tr><th>Player</th><th>Rating</th></tr>";
+    player_table = "<table><tr><th>White</th><th>Black</th></tr>";
     for (let player in data) {
       player_table += `<tr><th>${player}</th><th>${data[player]}</th></tr>`;
     }
