@@ -85,9 +85,16 @@ def get_round_robin_pairings(data, current_round):
         ref_arr = arr.copy()
 
     # get top and bottom lists to do pairings
-    top = [players[0]] + arr[0:num_players//2-1]
+    top = arr[0:num_players//2-1]
+    top0 = players[0]
     bottom = list(reversed(arr[(num_players-1)//2:(num_players-1)]))
+    bot0 = bottom.pop(0)
 
+    if current_round % 2 == 0:
+        pairings[top0] = bot0
+    else:
+        pairings[bot0] = top0
+    
     for i in range(len(top)):
         pairings[top[i]] = bottom[i]
 

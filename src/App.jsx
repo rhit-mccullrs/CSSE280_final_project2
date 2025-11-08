@@ -137,7 +137,7 @@ function Swiss_Pair() {
   }, []);
 
   async function button_listener() {
-    let button = document.getElementById("button")
+    let button = document.getElementById("next_round")
     button.addEventListener("click" , async function x(e) {
       set_round_number(round_number+=1)
       round_request = "/rr_next_round/" + list_name + "/" + round_number;
@@ -163,7 +163,7 @@ function Swiss_Pair() {
         </p>
       </div>
       <div>
-        <button id='button'>
+        <button id='next_round'>
           Next Round
         </button>
       </div>
