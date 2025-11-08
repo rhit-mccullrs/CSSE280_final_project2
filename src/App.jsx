@@ -103,14 +103,10 @@ async function get_data(data_request) {
   }
 }
 
-async function rr_next_round(round_request, round) {
+async function rr_next_round(round_request) {
   try {
     let response = await fetch(round_request, {
-      method: 'POST',
-      body: { "round": round },
-      headers: {
-        'Content-Type': 'application/json'
-      }
+      method: 'GET'
     })
     let responseData = await response.json();
     return responseData
@@ -121,7 +117,6 @@ async function rr_next_round(round_request, round) {
 }
 
 function update_data(round_request, round) {
-  round += 1;
   return rr_next_round(round_request, round)
 }
 
@@ -129,10 +124,11 @@ function Swiss_Pair() {
   let { list_name } = useParams();
   let data_request = "/swiss_setup/" + list_name
   let [data, set_data] = useState('');
-  let round_number = 1
   let player_table = ''
+  let [round_number, set_round_number] = useState(0)
 
   useEffect(() => {
+    set_round_number(1);
     async function x() {
       set_data(await get_data(data_request))
       await button_listener()
@@ -142,13 +138,14 @@ function Swiss_Pair() {
 
   async function button_listener() {
     let button = document.getElementById("button")
-    alert(round_number)
     button.addEventListener("click" , async function x(e) {
+      set_round_number(round_number+=1)
+      round_request = "/rr_next_round/" + list_name + "/" + round_number;
       set_data( await update_data(round_request, round_number))
     })
   }
 
-  let round_request = "/rr_next_round/" + list_name
+  let round_request = "/rr_next_round/" + list_name + "/" + round_number;
   if(data != {}) {
     player_table = "<table><tr><th>Player</th><th>Rating</th></tr>";
     for (let player in data) {
