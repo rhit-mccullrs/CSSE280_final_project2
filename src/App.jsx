@@ -167,6 +167,16 @@ function Swiss_Pair() {
           Next Round
         </button>
       </div>
+      <div>
+        <h2>Add Player</h2>
+        <form method="POST" action="/add_player" enctype="multipart/form-data">
+          <label for="player">Name:</label>
+          <input id="player" name="player" />
+          <label for="rating">Rating:</label>
+          <input id="rating" name="rating" />
+          <input id="submit" name="submit" value="submit" type="submit"/>
+        </form>
+      </div>
     </>
   )
 }
