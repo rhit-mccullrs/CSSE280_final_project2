@@ -111,16 +111,21 @@ function Swiss_Pair() {
     async function x() {
       set_data(await get_data(data_request))
     }
-    x() 
-  }, {})
+    x()
+  }, {});
 
+  let player_table = "<table><tr><th>Player</th><th>Rating</th></tr>";
+  for (let player in data) {
+    player_table += `<tr><th>${player}</th><th>${data[player]}</th></tr>`;
+  }
+  player_table += "</table>"
 
   return (
     <>
       <h1>Swiss Pairing Bracket: {list_name}</h1>
       <div>
         <p>
-          {JSON.stringify(data)}
+          <div dangerouslySetInnerHTML={{__html: player_table}} />
         </p>
       </div>
       <div>
