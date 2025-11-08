@@ -8,6 +8,7 @@ function App() {
       <Routes>
         <Route path="/index.html" element={<Index />} />
         <Route path="/lists" element={<Lists />} />
+        <Route path="/elim" element={<Elim />} />
         <Route path='/swiss_pair/:list_name' element={<Swiss_Pair />} />
         <Route path="*" element={<Not_Found />} />
       </Routes>
@@ -64,6 +65,17 @@ function Lists() {
           </select>
           <Link to={swiss_pair_link}> <input type="submit" value="Create Account" name="submit" id="submit" /> </Link>
         </form>
+      </div>
+    </>
+  );
+}
+
+function Elim() {
+  return (
+    <>
+      <h1>Elimination Bracket</h1>
+      <div>
+        
       </div>
     </>
   );

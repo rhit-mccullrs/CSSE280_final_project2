@@ -71,6 +71,10 @@ def rr_next_round(list, round):
                         headers={"Content-Type":"application/json"},
                         response=json.dumps(dataservice.get_round_robin_pairings(data, num_round)))
 
+@app.get("/elim")
+def elim():
+    return flask.Response(status="200 OK")
+
 # @app.get("/<path>")
 # def catch_all(path):
 #     return flask.Response(status="200 OK")
