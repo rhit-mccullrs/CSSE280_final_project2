@@ -63,7 +63,7 @@ def get_list_data(list_name):
 def add_player(username, user_list, player, rating):
     db = get_db()
     user = db.get(username)
-    user[user_list][player] = rating
+    user["lists"][user_list][player] = rating
     db.set(username,user)
     db.save()
 

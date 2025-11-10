@@ -8,7 +8,7 @@ function App() {
       <Routes>
         <Route path="/index.html" element={<Index />} />
         <Route path="/lists" element={<Lists />} />
-        <Route path="/elim" element={<Elim />} />
+        <Route path="/elim/:list_name" element={<Elim />} />
         <Route path='/swiss_pair/:list_name' element={<Swiss_Pair />} />
         <Route path="*" element={<Not_Found />} />
       </Routes>
@@ -52,19 +52,19 @@ function Lists() {
   let [list, set_list] = useState('');
   let swiss_setup_request = "/swiss_setup/" + list;
   let swiss_pair_link = "/swiss_pair/" + list;
+  let elim_link = "/elim/" + list;
   return (
     <>
       <h1>User Lists</h1>
       <div>
-        <form method="POST" action={swiss_setup_request}>
-          <p>Select a list to make a bracket for:</p>
-          <select name="user_lists" id="user_lists" onChange={(e) => set_list(e.target.value)}>
-            <option value="standard_list">Select a List</option>
-            <option value="rose-hulman">Rose-Hulman</option>
-            {additional_lists()}
-          </select>
-          <Link to={swiss_pair_link}> <input type="submit" value="Create Account" name="submit" id="submit" /> </Link>
-        </form>
+        <p>Select a list to make a bracket for:</p>
+        <select name="user_lists" id="user_lists" onChange={(e) => set_list(e.target.value)}>
+          <option value="standard_list">Select a List</option>
+          <option value="rose-hulman">Rose-Hulman</option>
+          {additional_lists()}
+        </select>
+        <Link to={swiss_pair_link}> <input type="submit" value="Create Swiss Pairing" name="submit" id="submit" /> </Link>
+        <Link to={elim_link}> <input type="submit" value="Create Elimination Bracket" name="submit" id="submit" /> </Link>
       </div>
     </>
   );
@@ -129,12 +129,33 @@ function update_data(round_request, round) {
   return rr_next_round(round_request, round)
 }
 
+async function add_player(list_name, new_player, new_rank) {
+  let request = "/add_player/" + list_name
+  try {
+    let response = await fetch(request, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: {"player": new_player, "rating": new_rank}
+    })
+    let responseData = await response.json();
+    return responseData
+  }
+  catch (ex) {
+    console.error(ex)
+  }
+}
+
 function Swiss_Pair() {
   let { list_name } = useParams();
   let data_request = "/swiss_setup/" + list_name
   let [data, set_data] = useState('');
   let player_table = ''
   let [round_number, set_round_number] = useState(0)
+  let [new_player, set_new_player] = useState('');
+  let [new_rank, set_new_rank] = useState('');
+
 
   useEffect(() => {
     set_round_number(1);
@@ -147,15 +168,20 @@ function Swiss_Pair() {
 
   async function button_listener() {
     let button = document.getElementById("next_round")
-    button.addEventListener("click" , async function x(e) {
-      set_round_number(round_number+=1)
+    let player_button = document.getElementById("add_player")
+    button.addEventListener("click", async function x(e) {
+      set_round_number(round_number += 1)
       round_request = "/rr_next_round/" + list_name + "/" + round_number;
-      set_data( await update_data(round_request, round_number))
+      set_data(await update_data(round_request, round_number))
+    })
+    player_button.addEventListener("click", async function y(e) {
+      await add_player(list_name, new_player, new_rank)
+      set_data(await update_data(round_request, round_number))
     })
   }
 
   let round_request = "/rr_next_round/" + list_name + "/" + round_number;
-  if(data != {}) {
+  if (data != {}) {
     player_table = "<table><tr><th>White</th><th>Black</th></tr>";
     for (let player in data) {
       player_table += `<tr><th>${player}</th><th>${data[player]}</th></tr>`;
@@ -178,13 +204,13 @@ function Swiss_Pair() {
       </div>
       <div>
         <h2>Add Player</h2>
-        <form method="POST" action="/add_player" enctype="multipart/form-data">
-          <label for="player">Name:</label>
-          <input id="player" name="player" />
-          <label for="rating">Rating:</label>
-          <input id="rating" name="rating" />
-          <input id="submit" name="submit" value="submit" type="submit"/>
-        </form>
+        <label for="player">Name:</label>
+        <input id="player" name="player" onChange={e => { set_new_player(e.target.value) }} />
+        <label for="rating">Rating:</label>
+        <input id="rating" name="rating" onChange={e => { set_new_rank(e.target.value) }} />
+        <button id='add_player'>
+          Add Player
+        </button>
       </div>
     </>
   )

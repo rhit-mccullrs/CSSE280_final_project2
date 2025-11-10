@@ -71,13 +71,14 @@ def rr_next_round(list, round):
                         response=json.dumps(dataservice.get_round_robin_pairings(data, num_round)))
 
 @app.post("/add_player/<user_list>")
-@jwt_required()
+# @jwt_required()
 def add_player(user_list):
-    username = get_jwt_identity()
-    player = request.form["player"]
-    rating = request.form["rating"]
-    dataservice.add_player(username,user_list,player,rating)
-    return flask.Response(status="200 OK")
+    username = "luke"
+    player = request.json["player"]
+    rating = request.json["rating"]
+    return flask.Response(status="200 OK",
+                        headers={"Content-Type":"application/json"},
+                        response=json.dumps(dataservice.add_player(username,user_list,player,rating)))
 
 
 @app.get("/elim")
