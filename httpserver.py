@@ -11,7 +11,6 @@ from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
 from flask_jwt_extended import JWTManager
 
-
 app = flask.Flask(__name__,
                   static_url_path='',
                   static_folder='dist')
@@ -70,6 +69,16 @@ def rr_next_round(list, round):
     return flask.Response(status="200 OK",
                         headers={"Content-Type":"application/json"},
                         response=json.dumps(dataservice.get_round_robin_pairings(data, num_round)))
+
+@app.post("/add_player/<user_list>")
+@jwt_required()
+def add_player(user_list):
+    username = get_jwt_identity()
+    player = request.form["player"]
+    rating = request.form["rating"]
+    dataservice.add_player(username,user_list,player,rating)
+    return flask.Response(status="200 OK")
+
 
 @app.get("/elim")
 def elim():

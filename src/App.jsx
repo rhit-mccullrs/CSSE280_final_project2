@@ -73,10 +73,7 @@ function Lists() {
 function Elim() {
   return (
     <>
-      <h1>Elimination Bracket</h1>
-      <div>
-        
-      </div>
+      <h1>PLZ</h1>
     </>
   );
 }
