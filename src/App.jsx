@@ -10,6 +10,7 @@ function App() {
         <Route path="/lists" element={<Lists />} />
         <Route path="/elim/:list_name" element={<Elim />} />
         <Route path='/swiss_pair/:list_name' element={<Swiss_Pair />} />
+        <Route path='/edit_players/:list_name' element={<Edit_Players />} />
         <Route path="*" element={<Not_Found />} />
       </Routes>
     </BrowserRouter>
@@ -53,6 +54,7 @@ function Lists() {
   let swiss_setup_request = "/swiss_setup/" + list;
   let swiss_pair_link = "/swiss_pair/" + list;
   let elim_link = "/elim/" + list;
+  let edit_players_link = "/edit_players/" + list;
   return (
     <>
       <h1>User Lists</h1>
@@ -63,17 +65,19 @@ function Lists() {
           <option value="rose-hulman">Rose-Hulman</option>
           {additional_lists()}
         </select>
-        <Link to={swiss_pair_link}> <input type="submit" value="Create Swiss Pairing" name="submit" id="submit" /> </Link>
-        <Link to={elim_link}> <input type="submit" value="Create Elimination Bracket" name="submit" id="submit" /> </Link>
+        <Link to={swiss_pair_link}> <input type="submit" value="Create Swiss Pairing" name="submit" /> </Link>
+        <Link to={elim_link}> <input type="submit" value="Create Elimination Bracket" name="submit" /> </Link>
+        <Link to={edit_players_link}> <input type="submit" value="Edit Players" name="submit" /></Link>
       </div>
     </>
   );
 }
 
 function Elim() {
+  
   return (
     <>
-      <h1>PLZ</h1>
+      
     </>
   );
 }
@@ -147,6 +151,66 @@ async function add_player(list_name, new_player, new_rank) {
   }
 }
 
+function Edit_Players() {
+
+   const [player, setplayer] = useState("");
+   const [playerList, setplayerList] = useState([]);
+
+   function addItem(event) {
+      event.preventDefault();
+
+      if (player.trim() !== "") {
+         const newItem = {
+            key: Date.now(),
+            text: player
+         };
+
+         setplayerList(prevList => [...prevList, newItem]);
+         setplayer("");
+      }
+
+      event.target.player.focus();
+   }
+
+   function deleteItem(key) {
+      setplayerList(prevList => prevList.filter(
+         item => item.key !== key));
+   }
+
+   return (
+      <>
+         <h1>player List</h1>
+         <form onSubmit={addItem}>
+            <label htmlFor="player">player?</label>&nbsp;
+            <input id="player" type="text" autoFocus
+               value={player} onChange={(e) => setplayer(e.target.value)} />
+            &nbsp;
+            <button type="submit">Add</button>
+         </form>
+         <PlayerList List={playerList}
+            delete={deleteItem} />
+      </>
+   );
+}
+
+function PlayerList(props) {
+
+   const PlayerList = props.List;
+
+   return (
+      <ol>
+         {PlayerList.map((item) =>
+            <li key={item.key}>
+               {item.text} &nbsp;
+               <button onClick={() => props.delete(item.key)}>
+                     X
+               </button>
+            </li>
+         )}
+      </ol>
+   );
+}
+
 function Swiss_Pair() {
   let { list_name } = useParams();
   let data_request = "/swiss_setup/" + list_name
@@ -215,5 +279,7 @@ function Swiss_Pair() {
     </>
   )
 }
+
+
 
 export default App
