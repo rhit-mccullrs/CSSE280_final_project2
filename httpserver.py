@@ -70,7 +70,7 @@ def rr_next_round(list, round):
                         headers={"Content-Type":"application/json"},
                         response=json.dumps(dataservice.get_round_robin_pairings(data, num_round)))
 
-@app.post("edit_player/<user_list>")
+@app.post("/edit_player/<user_list>")
 # @jwt_required()
 def add_player(user_list):
     username = "luke"
@@ -80,7 +80,7 @@ def add_player(user_list):
                         headers={"Content-Type":"application/json"},
                         response=json.dumps(dataservice.add_player(username,user_list,player,rating)))
 
-@app.patch("edit_player/<user_list>")
+@app.patch("/edit_player/<user_list>")
 def edit_player(user_list):
     username = "luke"
     player = request.json["player"]
@@ -89,7 +89,7 @@ def edit_player(user_list):
                         headers={"Content-Type":"application/json"},
                         response=json.dumps(dataservice.edit_player(username,user_list,player,rating)))
 
-@app.delete("edit_player/<user_list>")
+@app.delete("/edit_player/<user_list>")
 def delete_player(user_list):
     username = "luke"
     player = request.json["player"]

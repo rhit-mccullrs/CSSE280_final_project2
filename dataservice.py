@@ -67,6 +67,21 @@ def add_player(username, user_list, player, rating):
     db.set(username,user)
     db.save()
 
+def edit_player(username, user_list, player, rating):
+    db = get_db()
+    user = db.get(username)
+    user["lists"][user_list][player] = rating
+    db.set(username,user)
+    db.save()
+
+def delete_player(username, user_list, player):
+    db = get_db()
+    user = db.get(username)
+    db.remove(username,user["lists"][user_list][player])
+    db.save()
+
+
+
 def get_round_robin_pairings(data, current_round):
     pairings = {}
     players = []
