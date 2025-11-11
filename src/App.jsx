@@ -73,8 +73,15 @@ function Lists() {
   );
 }
 
-function Elim() {
-  
+async function Elim() {
+  let responseData = await get_data("/num_players");
+  let players = responseData["players"]
+  let html= "<>"
+  for (let i=0; i<Object.keys().length; i++) {
+    html += '<input type="text"/>'
+  }
+  html += "</>"
+
   return (
     <>
       
