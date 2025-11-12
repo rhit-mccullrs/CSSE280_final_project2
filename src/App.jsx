@@ -82,24 +82,26 @@ function Elim() {
     }
     x()
   }, []);
-  let html= `<section id="left">`
-  
-  for (let i=0; i<10; i++) {
+  let html = '<div id = "player">'
+  html += `<section id="left">`
+
+  for (let i = 0; i < 10; i++) {
     html += `<div><input type="text"/ id="button${i}">`
   }
   html += `</section>`
 
   html += `<section id="right">`
 
-  for (let i=10; i<20; i++) {
+  for (let i = 10; i < 20; i++) {
     html += `<div><input type="text"/ id="button${i}">`
   }
-  html += `</section>`
+  html += `</section></div>`
 
   return (
     <>
       <h1>Elimination Bracket</h1>
       <div dangerouslySetInnerHTML={{ __html: html }} />
+
     </>
   );
 }
@@ -155,15 +157,15 @@ function update_data(round_request, round) {
   return rr_next_round(round_request, round)
 }
 
-async function add_player(list_name, new_player, new_rank) {
-  let request = "/add_player/" + list_name
+async function edit_player(list_name, player, rank, type) {
+  let request = "/edit_player/" + list_name
   try {
     let response = await fetch(request, {
-      method: 'POST',
+      method: type,
       headers: {
         'Content-Type': 'application/json',
       },
-      body: {"player": new_player, "rating": new_rank}
+      body: { "player": player, "rating": rank }
     })
     let responseData = await response.json();
     return responseData
@@ -174,63 +176,94 @@ async function add_player(list_name, new_player, new_rank) {
 }
 
 function Edit_Players() {
+  let [player, setPlayer] = useState("");
+  let [rank, setRank] = useState("");
+  let [playerList, setplayerList] = useState([]);
+  let [data, set_data] = useState('');
+  let { list_name } = useParams();
+  let data_request = "/players/" + list_name
 
-   const [player, setplayer] = useState("");
-   const [playerList, setplayerList] = useState([]);
+  useEffect(() => {
+    async function x() {
+      set_data(await get_data(data_request))
+    }
+    x()
+  }, []);
 
-   function addItem(event) {
-      event.preventDefault();
+  if (data != {}) {
+    for (let player in data) {
+      preAddItem({ player })
+    }
+  }
+  function preAddItem(player, rank) {
+    let newItem = {
+      key: player,
+      text: player+" ("+rank+")"
+    };
 
-      if (player.trim() !== "") {
-         const newItem = {
-            key: Date.now(),
-            text: player
-         };
+    setplayerList(prevList => [...prevList, newItem]);
+  }
 
-         setplayerList(prevList => [...prevList, newItem]);
-         setplayer("");
-      }
+  async function addItem(event) {
+    event.preventDefault();
 
-      event.target.player.focus();
-   }
+    if (player.trim() !== "") {
+      let newItem = {
+        key: player,
+        text: player+" ("+rank+")"
+      };
+    
+    await edit_player(list_name, player, rank, "POST")
 
-   function deleteItem(key) {
-      setplayerList(prevList => prevList.filter(
-         item => item.key !== key));
-   }
 
-   return (
-      <>
-         <h1>player List</h1>
-         <form onSubmit={addItem}>
-            <label htmlFor="player">player?</label>&nbsp;
-            <input id="player" type="text" autoFocus
-               value={player} onChange={(e) => setplayer(e.target.value)} />
-            &nbsp;
-            <button type="submit">Add</button>
-         </form>
-         <PlayerList List={playerList}
-            delete={deleteItem} />
-      </>
-   );
+      setplayerList(prevList => [...prevList, newItem]);
+      setPlayer("");
+    }
+
+    event.target.player.focus();
+  }
+
+  async function deleteItem(key) {
+    setplayerList(prevList => prevList.filter(
+      item => item.key !== key));
+      await edit_player(list_name, key, rank, "DELETE")
+  }
+
+  return (
+    <>
+      <h1>player List</h1>
+      <form onSubmit={addItem}>
+        <label htmlFor="player">Player?</label>&nbsp;
+        <input id="player" type="text" autoFocus
+          value={player} onChange={(e) => setPlayer(e.target.value)} />
+        <label htmlFor="rank">Rank?</label>&nbsp;
+        <input id="rank" type="text" autoFocus
+          value={rank} onChange={(e) => setRank(e.target.value)} />
+        &nbsp;
+        <button type="submit">Add</button>
+      </form>
+      <PlayerList List={playerList}
+        delete={deleteItem} />
+    </>
+  );
 }
 
 function PlayerList(props) {
 
-   const PlayerList = props.List;
+  const PlayerList = props.List;
 
-   return (
-      <ol>
-         {PlayerList.map((item) =>
-            <li key={item.key}>
-               {item.text} &nbsp;
-               <button onClick={() => props.delete(item.key)}>
-                     X
-               </button>
-            </li>
-         )}
-      </ol>
-   );
+  return (
+    <ol>
+      {PlayerList.map((item) =>
+        <li key={item.key}>
+          {item.text} &nbsp;
+          <button onClick={() => props.delete(item.key)}>
+            X
+          </button>
+        </li>
+      )}
+    </ol>
+  );
 }
 
 function Swiss_Pair() {
@@ -239,8 +272,6 @@ function Swiss_Pair() {
   let [data, set_data] = useState('');
   let player_table = ''
   let [round_number, set_round_number] = useState(0)
-  let [new_player, set_new_player] = useState('');
-  let [new_rank, set_new_rank] = useState('');
 
 
   useEffect(() => {
@@ -254,14 +285,9 @@ function Swiss_Pair() {
 
   async function button_listener() {
     let button = document.getElementById("next_round")
-    let player_button = document.getElementById("add_player")
     button.addEventListener("click", async function x() {
       set_round_number(round_number += 1)
       round_request = "/rr_next_round/" + list_name + "/" + round_number;
-      set_data(await update_data(round_request, round_number))
-    })
-    player_button.addEventListener("click", async function y() {
-      await add_player(list_name, new_player, new_rank)
       set_data(await update_data(round_request, round_number))
     })
   }
@@ -286,16 +312,6 @@ function Swiss_Pair() {
       <div>
         <button id='next_round'>
           Next Round
-        </button>
-      </div>
-      <div>
-        <h2>Add Player</h2>
-        <label for="player">Name:</label>
-        <input id="player" name="player" onChange={e => { set_new_player(e.target.value) }} />
-        <label for="rating">Rating:</label>
-        <input id="rating" name="rating" onChange={e => { set_new_rank(e.target.value) }} />
-        <button id='add_player'>
-          Add Player
         </button>
       </div>
     </>

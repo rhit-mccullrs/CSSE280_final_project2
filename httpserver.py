@@ -44,6 +44,13 @@ def create_account():
                               headers={"Content-Type":"application/json"},
                               response=json.dumps(dataservice.get_lists(username)))
 
+@app.get("/players/<list>")
+def get_players(list):
+    username = "luke"
+    return flask.Response(status="200 OK",
+                            headers={"Content-Type":"application/json"},
+                            response=json.dumps(dataservice.get_list_data(list)))
+
 @app.get("/lists")
 @jwt_required()
 def lists():
