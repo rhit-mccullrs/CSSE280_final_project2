@@ -60,6 +60,9 @@ def get_list_data(list_name):
 
     return list_data
 
+def get_list(list_name):
+    return get_lists("luke")[list_name]
+
 def add_player(username, user_list, player, rating):
     db = get_db()
     user = db.get(username)
