@@ -80,10 +80,10 @@ def edit_player(username, user_list, player, rating):
 def delete_player(username, user_list, player):
     db = get_db()
     user = db.get(username)
-    db.remove(username,user["lists"][user_list][player])
-    db.save()
-
-
+    if user_list in user["lists"] and player in user["lists"][user_list]:
+        del user["lists"][user_list][player]
+        db.set(username,user)
+        db.save()
 
 def get_round_robin_pairings(data, current_round):
     pairings = {}

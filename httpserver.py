@@ -23,10 +23,6 @@ jwt = JWTManager(app)
 def shutdown():
     os._exit(0)
 
-@app.get("/home")
-def home():
-    return flask.Response(status="200 OK")
-
 @app.post("/login")
 def login():
     username = request.form["username"]
