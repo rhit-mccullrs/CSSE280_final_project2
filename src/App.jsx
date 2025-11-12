@@ -51,7 +51,7 @@ function additional_lists() {
 
 function Lists() {
   let [list, set_list] = useState('');
-  let swiss_setup_request = "/swiss_setup/" + list;
+  //let swiss_setup_request = "/swiss_setup/" + list;
   let swiss_pair_link = "/swiss_pair/" + list;
   let elim_link = "/elim/" + list;
   let edit_players_link = "/edit_players/" + list;
@@ -73,18 +73,33 @@ function Lists() {
   );
 }
 
-async function Elim() {
-  let responseData = await get_data("/num_players");
-  let players = responseData["players"]
-  let html= "<>"
-  for (let i=0; i<Object.keys().length; i++) {
-    html += '<input type="text"/>'
+function Elim() {
+  // let responseData = await get_data("/num_players");
+  // let players = responseData["players"]
+  useEffect(() => {
+    async function x() {
+
+    }
+    x()
+  }, []);
+  let html= `<section id="left">`
+  
+  for (let i=0; i<10; i++) {
+    html += `<div><input type="text"/ id="button${i}">`
   }
-  html += "</>"
+  html += `</section>`
+
+  html += `<section id="right">`
+
+  for (let i=10; i<20; i++) {
+    html += `<div><input type="text"/ id="button${i}">`
+  }
+  html += `</section>`
 
   return (
     <>
-      
+      <h1>Elimination Bracket</h1>
+      <div dangerouslySetInnerHTML={{ __html: html }} />
     </>
   );
 }
@@ -240,12 +255,12 @@ function Swiss_Pair() {
   async function button_listener() {
     let button = document.getElementById("next_round")
     let player_button = document.getElementById("add_player")
-    button.addEventListener("click", async function x(e) {
+    button.addEventListener("click", async function x() {
       set_round_number(round_number += 1)
       round_request = "/rr_next_round/" + list_name + "/" + round_number;
       set_data(await update_data(round_request, round_number))
     })
-    player_button.addEventListener("click", async function y(e) {
+    player_button.addEventListener("click", async function y() {
       await add_player(list_name, new_player, new_rank)
       set_data(await update_data(round_request, round_number))
     })
@@ -287,6 +302,4 @@ function Swiss_Pair() {
   )
 }
 
-
-
-export default App
+export default App;
