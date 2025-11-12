@@ -32,7 +32,7 @@ def login():
     username = request.form["username"]
     password = request.form["password"]
     if dataservice.login(username, password):
-        return flask.Response(status=200)
+        return flask.Response(status="200 OK")
 
 @app.post("/create_account")
 def create_account():
@@ -81,40 +81,31 @@ def rr_next_round(list, round):
 # @jwt_required()
 def add_player(user_list):
     username = "luke"
-    player = request.json["player"]
-    rating = request.json["rating"]
-    return flask.Response(status="200 OK",
-                        headers={"Content-Type":"application/json"},
-                        response=json.dumps(dataservice.add_player(username,user_list,player,rating)))
+    player = request.form["player"]
+    rating = request.form["rank"]
+    dataservice.add_player(username,user_list,player,rating)
+    return flask.Response(status="200 OK")
 
 @app.patch("/edit_player/<user_list>")
 def edit_player(user_list):
     username = "luke"
-    player = request.json["player"]
-    rating = request.json["rating"]
-    return flask.Response(status="200 OK",
-                        headers={"Content-Type":"application/json"},
-                        response=json.dumps(dataservice.edit_player(username,user_list,player,rating)))
+    data = request.get_json()
+    player = request.form["player"]
+    rating = request.form["rank"]
+    dataservice.edit_player(username,user_list,player,rating)
+    return flask.Response(status="200 OK")
 
 @app.delete("/edit_player/<user_list>")
 def delete_player(user_list):
     username = "luke"
-    player = request.json["player"]
-    return flask.Response(status="200 OK",
-                        headers={"Content-Type":"application/json"},
-                        response=json.dumps(dataservice.delete_player(username,user_list,player)))    
-
-
+    player = request.form["player"]
+    dataservice.delete_player(username,user_list,player)
+    return flask.Response(status="200 OK") 
 
 
 @app.get("/elim")
 def elim():
     return flask.Response(status="200 OK")
-
-# @app.get("/<path>")
-# def catch_all(path):
-#     return flask.Response(status="200 OK")
-
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5173)

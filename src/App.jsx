@@ -159,16 +159,15 @@ function update_data(round_request, round) {
 
 async function edit_player(list_name, player, rank, type) {
   let request = "/edit_player/" + list_name
+  let formData = new FormData()
+  formData.append("player", player)
+  formData.append("rank", rank)
   try {
-    let response = await fetch(request, {
-      method: type,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: { "player": player, "rating": rank }
-    })
-    let responseData = await response.json();
-    return responseData
+    await fetch(request,
+      {
+        method: type,
+        body: formData
+      })
   }
   catch (ex) {
     console.error(ex)
@@ -190,15 +189,18 @@ function Edit_Players() {
     x()
   }, []);
 
-  if (data != {}) {
-    for (let player in data) {
-      preAddItem({ player })
+  useEffect(() => {
+    if (data != {}) {
+      for (let player in data) {
+        preAddItem(player, data[player])
+      }
     }
-  }
+  }, [data]);
+
   function preAddItem(player, rank) {
     let newItem = {
       key: player,
-      text: player+" ("+rank+")"
+      text: player + " (" + rank + ")"
     };
 
     setplayerList(prevList => [...prevList, newItem]);
@@ -210,23 +212,26 @@ function Edit_Players() {
     if (player.trim() !== "") {
       let newItem = {
         key: player,
-        text: player+" ("+rank+")"
+        text: player + " (" + rank + ")"
       };
-    
-    await edit_player(list_name, player, rank, "POST")
 
+      let temp_player = player
+      let temp_rank = rank
+      await edit_player(list_name, temp_player, temp_rank, "POST")
 
       setplayerList(prevList => [...prevList, newItem]);
       setPlayer("");
+      setRank("");
     }
 
     event.target.player.focus();
+    event.target.rank.focus();
   }
 
   async function deleteItem(key) {
     setplayerList(prevList => prevList.filter(
       item => item.key !== key));
-      await edit_player(list_name, key, rank, "DELETE")
+    await edit_player(list_name, key, rank, "DELETE")
   }
 
   return (
