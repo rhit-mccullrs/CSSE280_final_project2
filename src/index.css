@@ -1,10 +1,5 @@
-#left {
+#players {
     /*TODO: create a flexbox to make columns for each layer of the elimination bracket*/
     display: flex;
-    align-items:flex-start
-}
-#right {
-    /*TODO: create a flexbox to make columns for each layer of the elimination bracket*/
-    display: flex;
-    align-items:flex-start
+    gap:10px;
 }
