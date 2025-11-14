@@ -48,10 +48,9 @@ def get_players(list):
                             response=json.dumps(dataservice.get_list_data(list)))
 
 @app.get("/lists")
-@jwt_required()
+# @jwt_required()
 def lists():
-    username = get_jwt_identity()
-    dataservice.get_lists(username)
+    username = "luke"
     return flask.Response(status="200 OK",
                             headers={"Content-Type":"application/json"},
                             response=json.dumps(dataservice.get_lists(username)))
@@ -98,6 +97,13 @@ def delete_player(user_list):
     dataservice.delete_player(username,user_list,player)
     return flask.Response(status="200 OK") 
 
+@app.get("/groups")
+def groups():
+    username="luke"
+    groups = dataservice.get_groups(username)
+    return flask.Response(status="200 OK",
+                        headers={"Content-Type":"application/json"},
+                        response=json.dumps(groups))
 
 @app.get("/elim")
 def elim():

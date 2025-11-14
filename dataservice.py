@@ -85,6 +85,15 @@ def delete_player(username, user_list, player):
         db.set(username,user)
         db.save()
 
+def get_groups(username):
+    db = get_db()
+    user = db.get(username)
+    groups = {}
+    for group in user["lists"]:
+        groups[group] = {}
+    
+    return groups
+
 def get_round_robin_pairings(data, current_round):
     pairings = {}
     players = []

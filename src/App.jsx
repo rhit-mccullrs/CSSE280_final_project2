@@ -44,17 +44,30 @@ function Index() {
   );
 }
 
-function additional_lists() {
-
-}
-
-
 function Lists() {
   let [list, set_list] = useState('');
   //let swiss_setup_request = "/swiss_setup/" + list;
   let swiss_pair_link = "/swiss_pair/" + list;
   let elim_link = "/elim/" + list;
   let edit_players_link = "/edit_players/" + list;
+  let request_url = "/groups";
+  let [html, set_html] = useState("");
+  let [groups, set_groups] = useState({});
+
+  useEffect(() => {
+    set_html("");
+    async function x() {
+      set_groups(await get_data(request_url))
+    }
+    x()
+  }, []);
+
+  //useEffect(() => {
+  for (let group in groups) {
+    html += `<option value=${group}>${group}</option>`;
+  }
+  //}, []);
+
   return (
     <>
       <h1>User Lists</h1>
@@ -62,8 +75,7 @@ function Lists() {
         <p>Select a list to make a bracket for:</p>
         <select name="user_lists" id="user_lists" onChange={(e) => set_list(e.target.value)}>
           <option value="standard_list">Select a List</option>
-          <option value="rose-hulman">Rose-Hulman</option>
-          {additional_lists()}
+          <div dangerouslySetInnerHTML={{ __html: html }} />
         </select>
         <Link to={swiss_pair_link}> <input type="submit" value="Create Swiss Pairing" name="submit" /> </Link>
         <Link to={elim_link}> <input type="submit" value="Create Elimination Bracket" name="submit" /> </Link>
@@ -74,26 +86,35 @@ function Lists() {
 }
 
 function Elim() {
-  // let responseData = await get_data("/num_players");
-  // let players = responseData["players"]
+  let { list_name } = useParams();
+  let request_url = "/players/" + list_name;
+  let [players, setPlayers] = useState({});
+
   useEffect(() => {
     async function x() {
-
+      setPlayers(await get_data(request_url));
     }
-    x()
+    x();
   }, []);
-  let html = '<div id = "player">'
+
+  let html = '<div id = "players">'
   html += `<section id="left">`
 
-  for (let i = 0; i < 10; i++) {
-    html += `<div><input type="text"/ id="button${i}">`
+  for (let i=0; i<Math.floor(Object.keys(players).length/2); i++) {
+    let player = Object.keys(players)[i];
+    html += `<div><input type="text" value="${player}" /></div>`
   }
   html += `</section>`
 
   html += `<section id="right">`
 
-  for (let i = 10; i < 20; i++) {
-    html += `<div><input type="text"/ id="button${i}">`
+  for (let i=Math.floor(Object.keys(players).length/2); i<Object.keys(players).length; i++) {
+    let player = Object.keys(players)[i];
+    html += `<div><input type="text" value="${player}" /></div>`
+  }
+  // if odd number of players in the right hand section
+  if ((Object.keys(players).length - Math.floor(Object.keys(players).length/2)) % 2 == 1) {
+    html += `<div><input type="text" value="BYE" /></div>`
   }
   html += `</section></div>`
 
@@ -101,7 +122,6 @@ function Elim() {
     <>
       <h1>Elimination Bracket</h1>
       <div dangerouslySetInnerHTML={{ __html: html }} />
-
     </>
   );
 }
@@ -158,19 +178,19 @@ function update_data(round_request, round) {
 }
 
 async function edit_player(list_name, player, rank, type) {
-  let request = "/edit_player/" + list_name
-  let formData = new FormData()
-  formData.append("player", player)
-  formData.append("rank", rank)
+  let request = "/edit_player/" + list_name;
+  let formData = new FormData();
+  formData.append("player", player);
+  formData.append("rank", rank);
   try {
     await fetch(request,
       {
         method: type,
         body: formData
-      })
+      });
   }
   catch (ex) {
-    console.error(ex)
+    console.error(ex);
   }
 }
 
@@ -180,19 +200,19 @@ function Edit_Players() {
   let [playerList, setplayerList] = useState([]);
   let [data, set_data] = useState('');
   let { list_name } = useParams();
-  let data_request = "/players/" + list_name
+  let data_request = "/players/" + list_name;
 
   useEffect(() => {
     async function x() {
-      set_data(await get_data(data_request))
+      set_data(await get_data(data_request));
     }
-    x()
+    x();
   }, []);
 
   useEffect(() => {
     if (data != {}) {
       for (let player in data) {
-        preAddItem(player, data[player])
+        preAddItem(player, data[player]);
       }
     }
   }, [data]);
@@ -215,9 +235,9 @@ function Edit_Players() {
         text: player + " (" + rank + ")"
       };
 
-      let temp_player = player
-      let temp_rank = rank
-      await edit_player(list_name, temp_player, temp_rank, "POST")
+      let temp_player = player;
+      let temp_rank = rank;
+      await edit_player(list_name, temp_player, temp_rank, "POST");
 
       setplayerList(prevList => [...prevList, newItem]);
       setPlayer("");
@@ -231,7 +251,7 @@ function Edit_Players() {
   async function deleteItem(key) {
     setplayerList(prevList => prevList.filter(
       item => item.key !== key));
-    await edit_player(list_name, key, rank, "DELETE")
+    await edit_player(list_name, key, rank, "DELETE");
   }
 
   return (
@@ -301,7 +321,7 @@ function Swiss_Pair() {
   if (data != {}) {
     player_table = "<table><tr><th>White</th><th>Black</th></tr>";
     for (let player in data) {
-      player_table += `<tr><th>${player}</th><th>${data[player]}</th></tr>`;
+      player_table += `<tr><td>${player}</td><td>${data[player]}</td></tr>`;
     }
     player_table += "</table>"
   }
