@@ -1,4 +1,7 @@
 /* general css */
+:root {
+    --input-height: 21.2px;
+}
 body {
     background-color: rgb(174, 195, 212);
     font-family: Arial, Helvetica, sans-serif;
@@ -31,9 +34,70 @@ tr:nth-child(even){background-color: #f2f2f2;}
 
 /* Elimination Bracket */
 #players {
-    /*TODO: create a flexbox to make columns for each layer of the elimination bracket*/
     display: flex;
     gap:10px;
 }
 
+.elim_player0 {
+    margin-bottom: var(--input-height);
+}
 
+.elim_player1 {
+    margin-bottom: calc(var(--input-height)*3);
+}
+
+.elim_player2 {
+    margin-bottom: calc(var(--input-height)*7);
+}
+
+.elim_player3 {
+    margin-bottom: calc(var(--input-height)*7);
+}
+
+.elim_player4 {
+    margin-bottom: calc(var(--input-height)*15);
+}
+
+.elim_player5 {
+    margin-bottom: calc(var(--input-height)*19);
+}
+
+.elim_player6 {
+    margin-bottom: calc(var(--input-height)*23);
+}
+
+.elim_player7 {
+    margin-bottom: calc(var(--input-height)*27);
+}
+
+#col0 {
+    margin-top: var(--input-height);
+}
+
+#col1 {
+    margin-top: calc(var(--input-height) * 2);
+}
+
+#col2 {
+    margin-top: calc(var(--input-height) * 4);
+}
+
+#col3 {
+    margin-top: calc(var(--input-height) * 8);
+}
+
+#col4 {
+    margin-top: calc(var(--input-height) * 12);
+}
+
+#col5 {
+    margin-top: calc(var(--input-height) * 10);
+}
+
+#col6 {
+    margin-top: calc(var(--input-height) * 10);
+}
+
+#col7 {
+    margin-top: calc(var(--input-height) * 10);
+}

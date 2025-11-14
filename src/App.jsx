@@ -103,11 +103,11 @@ function Elim() {
   
   html+=`<div id = "col0">`
   for(let i=0; i<num_players;i++) {
-    html+=`<div><input type="text" value="${Object.keys(players).at(i)}"/></div>`
+    html+=`<div class="elim_player0"><input type="text" value="${Object.keys(players).at(i)}"/></div>`
   }
 
   if(num_players%2 != 0) {
-    html+=`<div><input type="text" value="No Player"/></div>`
+    html+=`<div class="elim_player0"><input type="text" value="No Player"/></div>`
     num_players_temp++;
   }
   html+=`</div>`
@@ -117,7 +117,7 @@ function Elim() {
     num_players_temp = Math.ceil(num_players_temp/2)
     html+=`<div id=col${count}>`
     for(let i=0; i<num_players_temp;i++) {
-      html+=`<div><input type="text"/></div>`
+      html+=`<div class="elim_player${count}"><input type="text" /></div>`
     }
     html+=`</div>`
     count++;
