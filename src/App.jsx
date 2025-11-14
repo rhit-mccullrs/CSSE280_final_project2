@@ -97,26 +97,33 @@ function Elim() {
     x();
   }, []);
 
-  let html = '<div id = "players">'
-  html += `<section id="left">`
-
-  for (let i=0; i<Math.floor(Object.keys(players).length/2); i++) {
-    let player = Object.keys(players)[i];
-    html += `<div><input type="text" value="${player}" /></div>`
+  let num_players = Object.keys(players).length
+  let num_players_temp = num_players
+  let html = `<div id = "players">`
+  
+  html+=`<div id = "col0">`
+  for(let i=0; i<num_players;i++) {
+    html+=`<div><input type="text" value="${Object.keys(players).at(i)}"/></div>`
   }
-  html += `</section>`
 
-  html += `<section id="right">`
+  if(num_players%2 != 0) {
+    html+=`<div><input type="text" value="No Player"/></div>`
+    num_players_temp++;
+  }
+  html+=`</div>`
 
-  for (let i=Math.floor(Object.keys(players).length/2); i<Object.keys(players).length; i++) {
-    let player = Object.keys(players)[i];
-    html += `<div><input type="text" value="${player}" /></div>`
+  let count = 1;
+  while(num_players_temp > 1){
+    num_players_temp = Math.ceil(num_players_temp/2)
+    html+=`<div id=col${count}>`
+    for(let i=0; i<num_players_temp;i++) {
+      html+=`<div><input type="text"/></div>`
+    }
+    html+=`</div>`
+    count++;
   }
-  // if odd number of players in the right hand section
-  if ((Object.keys(players).length - Math.floor(Object.keys(players).length/2)) % 2 == 1) {
-    html += `<div><input type="text" value="BYE" /></div>`
-  }
-  html += `</section></div>`
+
+  html += `</div>`
 
   return (
     <>
