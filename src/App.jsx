@@ -77,7 +77,7 @@ function Lists() {
           <option value="standard_list">Select a List</option>
           <div dangerouslySetInnerHTML={{ __html: html }} />
         </select>
-        <Link to={swiss_pair_link}> <input type="submit" value="Create Swiss Pairing" name="submit" /> </Link>
+        <Link to={swiss_pair_link}> <input type="submit" value="Create Round Robin Pairing" name="submit" /> </Link>
         <Link to={elim_link}> <input type="submit" value="Create Elimination Bracket" name="submit" /> </Link>
         <Link to={edit_players_link}> <input type="submit" value="Edit Players" name="submit" /></Link>
       </div>
@@ -335,7 +335,7 @@ function Swiss_Pair() {
 
   return (
     <>
-      <h1>Swiss Pairing Bracket: {list_name}</h1>
+      <h1>Round Robin Bracket: {list_name}</h1>
       <div>
         <p>
           <div dangerouslySetInnerHTML={{ __html: player_table }} />

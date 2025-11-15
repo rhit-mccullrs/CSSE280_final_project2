@@ -13,7 +13,7 @@ h1 {
 
 /* Round Robin */
 .table {
-    
+    border: 1px solid black 
 }
 
 .td,th {
